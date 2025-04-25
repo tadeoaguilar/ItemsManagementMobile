@@ -1,24 +1,36 @@
-﻿namespace eItems.Mobile;
+﻿using eItems.Mobile.Models;
+using eItems.Mobile.Services;
+
+namespace eItems.Mobile;
 
 public partial class MainPage : ContentPage
 {
-	int count = 0;
+	private readonly IApiService _apiService;
+    
+    public MainPage(IApiService apiService)
+    {
+        InitializeComponent();
+        _apiService = apiService;
+        LoadItemsAsync();
+    }
 
-	public MainPage()
-	{
-		InitializeComponent();
-	}
-
-	private void OnCounterClicked(object sender, EventArgs e)
-	{
-		count++;
-
-		if (count == 1)
-			CounterBtn.Text = $"Clicked {count} time";
-		else
-			CounterBtn.Text = $"Clicked {count} times";
-
-		SemanticScreenReader.Announce(CounterBtn.Text);
-	}
+    private async Task LoadItemsAsync()
+    {
+        try
+        {
+            LoadingIndicator.IsRunning = true;
+            List<Item> items = await  _apiService.GetItemsAsync();
+            ItemsCollection.ItemsSource = items;
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Error", "Unable to load items: " + ex.Message, "OK");
+             LoadingIndicator.IsRunning = false;
+        }
+        finally
+        {
+            LoadingIndicator.IsRunning = false;
+        }
+    }
 }
 

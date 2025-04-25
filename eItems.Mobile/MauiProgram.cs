@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using eItems.Mobile.Services;
+using Microsoft.Extensions.Logging;
 
 namespace eItems.Mobile;
 
@@ -14,7 +15,7 @@ public static class MauiProgram
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 			});
-
+		builder.Services.AddSingleton<IApiService, ApiService>();
 #if DEBUG
 		builder.Logging.AddDebug();
 #endif
