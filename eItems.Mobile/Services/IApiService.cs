@@ -6,5 +6,5 @@ namespace eItems.Mobile.Services;
 
 public interface IApiService
 {
-    Task<List<Item>> GetItemsAsync(CancellationToken cancellationToken = default);
+    Task<List<Item>> GetItemsAsync(int pageIndex = 0, int pageSize = 10,CancellationToken cancellationToken = default);
 }

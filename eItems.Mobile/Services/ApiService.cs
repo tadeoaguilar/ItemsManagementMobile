@@ -22,20 +22,21 @@ public class ApiService: IApiService
             Timeout = _timeout
         };
     }
-public async Task<List<Item>> GetItemsAsync(CancellationToken cancellationToken = default)
+public async Task<List<Item>> GetItemsAsync(int pageIndex = 0, int pageSize = 10,CancellationToken cancellationToken = default)
     {
         try
         {
             using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             cts.CancelAfter(_timeout);
 
-            Console.WriteLine($"Attempting to connect to: {_httpClient.BaseAddress}/assets");
+            var url = $"assets?pageIndex={pageIndex}&pageSize={pageSize}";
+            Console.WriteLine($"Attempting to connect to: {_httpClient.BaseAddress}/{url}");
             
-            var response = await _httpClient.GetAsync("assets", cts.Token);
+            var response = await _httpClient.GetAsync(url, cts.Token);
             response.EnsureSuccessStatusCode();
             
-            var items = await response.Content.ReadFromJsonAsync<List<Item>>(cancellationToken: cts.Token);
-            return items ?? new List<Item>();
+            var paginatedResponse = await response.Content.ReadFromJsonAsync<PaginatedResponse<Item>>(cancellationToken: cts.Token);
+            return paginatedResponse?.Data ?? new List<Item>();
         }
         catch (HttpRequestException ex)
         {
@@ -52,6 +53,6 @@ public async Task<List<Item>> GetItemsAsync(CancellationToken cancellationToken 
             Console.WriteLine($"Unexpected error: {ex.Message}");
             throw;
         }
-    }
+        }
    
 }

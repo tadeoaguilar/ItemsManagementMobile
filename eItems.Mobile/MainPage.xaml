@@ -16,7 +16,11 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Frame Margin="5">
-                            <VerticalStackLayout>
+                            <VerticalStackLayout Spacing="10">
+                                <Image Source="{Binding AssetImage}"
+                                       HeightRequest="200"
+                                       Aspect="AspectFill"
+                                       SemanticProperties.Description="{Binding Description}"/>
                                 <Label Text="{Binding AssetCD}" 
                                        FontSize="20"
                                        FontAttributes="Bold"/>
